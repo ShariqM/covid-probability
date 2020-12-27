@@ -34,6 +34,13 @@ S_NEG = 1 - S_POS  # Probabily you think he didn't have it.
 # S=1 -> Subject has covid. T=1 - Test is positive.
 # FP = P(T=1|S=0)
 # FN = P(T=0|S=1)
+# With multiple tests you do:
+# P(S = 1 | T_0 = 1, T_1 = 1) = 
+#   [P(T_0=1, T_1=0 | S = 1) * P(S=1)] / P(T_0=1, T_1=0)  # Bayes rule.
+#
+#   P(T_0=1, T_1=0) =
+#     P(T_0=1, T_1=0 | S=0) + P(T_0=1, T_1=0 | S=1)  # By definition.
+#     
 
 def get_p(t, s):
   # P(T=t | S=s)
@@ -63,6 +70,7 @@ def probability_s_equals_given_results(test_results, s):
   else:
     raise Exception("Doggie, c'mon.")
 
+  print (numerator, denominator)
   return numerator / denominator
 
 
@@ -71,13 +79,14 @@ def probability_s_equals_given_results(test_results, s):
 ####################
 # test_results = [1, 0, 0]  # Positive Friday, Negative Monday, Negative Monday.
 # test_results = [1]
-test_results = [1, 0] # Positive Friday, Negative Monday, 
+test_results = [1, 0, 0, 0] # Positive Friday, Negative Monday, 
 
 
 p_pos = probability_s_equals_given_results(test_results, 1)
 p_neg = probability_s_equals_given_results(test_results, 0)
 assert np.allclose(p_pos + p_neg, 1.0)  # Testing this code.
 
-print ("With test results: ", test_results)
+print ("With FP = %.3f, FN = %.3f, and P(S=1)=%.3f." % (FP, FN, S_POS))
+print ("With test results: %s", test_results)
 print ("Probability subject has the virus: %.2f%%" % (p_pos * 100))
 print ("Probability subject does not have the virus: %.2f%%" % (p_neg * 100))
